@@ -11,6 +11,7 @@ namespace JL.VendingMachines.Models {
     public Machine() {
       AcceptableCoinsText = "1, 5, 10";
       Slots = new HashSet<Slot>();
+      Amount = TotalAmount = 0m;
     }
 
     private decimal _amount = 0m;
@@ -19,6 +20,8 @@ namespace JL.VendingMachines.Models {
 
     public int Id { get; set; }
     public string Name { get; set; }
+    public decimal TotalAmount { get; set; }
+
     public virtual ICollection<Slot> Slots { get; set; }
 
     /// <summary>
@@ -72,6 +75,21 @@ namespace JL.VendingMachines.Models {
       return (slot != null
               && Amount >= slot.Product.Price
               && slot.Quantity > 0);
+    }
+
+    public decimal Sell(int slotId)
+    {
+      if (!Sellable(slotId)) throw new Exception();
+      var slot = Slots.SingleOrDefault(x => x.Id == slotId);
+      if (slot == null) throw new Exception();
+
+      decimal returnAmount;
+      slot.Quantity--;
+      returnAmount = Amount - slot.Product.Price;
+      TotalAmount += slot.Product.Price;
+      Amount = 0m;
+
+      return returnAmount;
     }
   }
 }
