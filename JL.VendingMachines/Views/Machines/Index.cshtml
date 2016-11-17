@@ -32,12 +32,15 @@
   </audio>
 }
 
-<form>
+<form action="~/Machines/Sell/@Model.Id" method="post">
+  @Html.AntiForgeryToken()
+
   @foreach (var slot in Model.Slots) {
     if (slot.Product != null) {
       bool shouldDisabled = !Model.Sellable(slot.Id);
 
-      <button class="slot btn btn-default" disabled="@shouldDisabled">
+      <button class="slot btn btn-default" disabled="@shouldDisabled"
+              name="slotId" value="@slot.Id">
         <div class="name">@slot.Product.Name</div>
         <div>@slot.Product.Price</div>
         <div>@slot.Quantity pcs</div>
@@ -69,6 +72,9 @@ Total Amount @Model.Amount
     }
   </div>
 </form>
+
+<hr/>
+<h3>Total Amount: @Model.TotalAmount.ToString("n2")</h3>
 
 @section scripts {
   <script>

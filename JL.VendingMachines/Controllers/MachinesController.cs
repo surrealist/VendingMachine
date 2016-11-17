@@ -66,11 +66,17 @@ namespace JL.VendingMachines.Controllers {
       return View(item);
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Sell(int id, int slotId) {
+      var m = db.Machines.Find(id);
+      if (m == null) {
+        return HttpNotFound();
+      }
+      decimal returnAmount = m.Sell(slotId);
+      TempData["returnAmount"] = returnAmount;
 
-    public ActionResult Init(int id) {
-
-
-      return View();
+      return RedirectToAction("Index", new { id = id });
     }
   }
 }
