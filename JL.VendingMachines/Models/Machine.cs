@@ -83,13 +83,13 @@ namespace JL.VendingMachines.Models {
       var slot = Slots.SingleOrDefault(x => x.Id == slotId);
       if (slot == null) throw new Exception();
 
-      decimal @return;
+      decimal returnAmount;
       slot.Quantity--;
-      @return = Amount - slot.Product.Price;
+      returnAmount = Amount - slot.Product.Price;
       TotalAmount += slot.Product.Price;
       Amount = 0m;
 
-      return @return;
+      return returnAmount;
     }
   }
 }
