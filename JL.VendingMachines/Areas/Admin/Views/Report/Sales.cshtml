@@ -1,0 +1,61 @@
+﻿@using JL.VendingMachines.Models
+@model IEnumerable<SaleItem>
+
+@{
+  int? productId = (int?)ViewBag.CurrentProductId;
+}
+<h2>Sales Report</h2>
+
+<div class="well well-sm">
+  @Html.DropDownList("ProductId", "All Products")
+</div>
+
+@section scripts {
+  <script>
+    $("#ProductId").change(function () {
+      var url = "/Admin/Report/Sales?ProductId="
+                + $(this).val();
+      window.location = url;
+    });
+  </script>
+}
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Date</th>
+      @if (productId == null) {
+        <th>Product</th>
+      }
+      <th class="text-right">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    @{
+      decimal sum = 0m;
+    }
+    @foreach (var item in Model) {
+      sum += item.Price;
+      <tr>
+        <td>@item.Id</td>
+        <td>@item.Date</td>
+        @if (productId == null) {
+          <td>@item.ProductName</td>
+        }
+        <td class="text-right">@item.Price</td>
+      </tr>
+    }
+  </tbody>
+  <tfoot>
+    <tr class="info">
+      @{
+        int totalColumns = productId == null ? 4 : 3;
+      }
+      <td colspan="@(totalColumns - 1)">
+        <b>Total Price</b>
+      </td>
+      <td class="text-right">@sum</td>
+    </tr>
+  </tfoot>
+</table>
