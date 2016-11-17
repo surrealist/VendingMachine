@@ -1,0 +1,49 @@
+﻿@using JL.VendingMachines.Models
+@model IEnumerable<Product>
+
+<h2>Products</h2>
+ 
+<div class="well well-sm">
+  <a href="~/Products/Create"
+     class="btn btn-success btn-sm">Add Product</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Weight (g)</th>
+        <th>Picture</th>
+        <th>Featured?</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var p in Model) {
+
+        string className = "";
+        if (p.IsFeatured) {
+          className = "success";
+        }
+
+        <tr class="@className">
+          <td>@p.Id</td>
+          <td>@p.Name</td>
+          <td>@p.Price</td>
+          <td>@p.WeightGrams</td>
+          <td>
+            <img src="@p.PictureUrl"
+                 class="img-thumbnail" width="200" />
+          </td>
+          <td>
+            @Html.DisplayFor(m => p.IsFeatured, "Boolean_YesNo") 
+          </td>
+          <td></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

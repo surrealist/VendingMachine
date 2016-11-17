@@ -1,0 +1,82 @@
+﻿@using JL.VendingMachines.Models
+@model Machine
+
+@{
+  ViewBag.Title = "Vending Machine";
+}
+
+
+@Html.DropDownList("Id",
+  (IEnumerable<SelectListItem>)ViewBag.MachineId,
+  new { @class = "form-control pull-left" })
+
+<a href="~/Machines/Create" class="btn btn-success"
+   style="margin-left:10px;">
+  Add New
+  <span class="glyphicon glyphicon-plus"></span>
+</a>
+
+<h2>
+  @ViewBag.Title
+  (#@Model.Id)
+</h2>
+
+@if (TempData["Error"] != null) {
+  <div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    @TempData["Error"]
+  </div>
+
+  <audio autoplay>
+    <source src="~/Sound/sound.mp3" type="audio/mpeg" />
+  </audio>
+}
+
+<form>
+  @foreach (var slot in Model.Slots) {
+    if (slot.Product != null) {
+      bool shouldDisabled = !Model.Sellable(slot.Id);
+
+      <button class="slot btn btn-default" disabled="@shouldDisabled">
+        <div class="name">@slot.Product.Name</div>
+        <div>@slot.Product.Price</div>
+        <div>@slot.Quantity pcs</div>
+      </button>
+    }
+    else {
+      <button class="slot btn btn-default"
+              disabled>
+        Empty Slot
+      </button>
+    }
+  }
+</form>
+
+<hr />
+Total Amount @Model.Amount
+
+<form action="~/Machines/InsertCoin/@Model.Id" method="post">
+  <div class="well well-sm">
+    <button type="submit" class="btn btn-default" name="amt" value="1">1</button>
+    <button type="submit" class="btn btn-default" name="amt" value="5">5</button>
+    <button type="submit" class="btn btn-default" name="amt" value="10">10</button>
+
+    @if (Model.Amount > 0) {
+    <button type="submit" class="btn btn-danger"
+            formaction="~/Machines/RemoveCoins/@Model.Id">
+      Cancel
+    </button>
+    }
+  </div>
+</form>
+
+@section scripts {
+  <script>
+    $("select#Id").change(function () {
+      var id = $(this).val(); // get value
+      var url = "/Machines/Index/" + id;
+
+      window.location = url;
+    });
+  </script>
+}
