@@ -74,7 +74,38 @@ namespace JL.VendingMachines.Controllers {
         return HttpNotFound();
       }
       decimal returnAmount = m.Sell(slotId);
+      db.SaveChanges();
+
       TempData["returnAmount"] = returnAmount;
+
+      return RedirectToAction("Index", new { id = id });
+    }
+    
+    [HttpPost]
+    public ActionResult Create10RandomlySales(int id) {
+      var r = new Random();
+      var m = db.Machines.Find(id); 
+      var slotIds = m.Slots
+                    .Where(s => s.Product != null)
+                    .Select(s => s.Id).ToArray();  
+      int n;
+
+      for (int i = 0; i < 10; i++) {
+        n = r.Next(slotIds.Length);
+
+        // insert coins
+        m.AddCoin(10);
+        m.AddCoin(10);
+        m.AddCoin(10);
+        m.AddCoin(10);
+        m.AddCoin(10);
+        m.AddCoin(10);
+        m.AddCoin(10);
+
+
+        m.Sell(slotIds[n]);
+      }
+      db.SaveChanges();
 
       return RedirectToAction("Index", new { id = id });
     }

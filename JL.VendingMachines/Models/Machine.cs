@@ -85,6 +85,9 @@ namespace JL.VendingMachines.Models {
 
       decimal returnAmount;
       slot.Quantity--;
+      if (slot.Quantity == 0) {
+        slot.Quantity = 5;
+      }
       returnAmount = Amount - slot.Product.Price;
       TotalAmount += slot.Product.Price;
       Amount = 0m;
